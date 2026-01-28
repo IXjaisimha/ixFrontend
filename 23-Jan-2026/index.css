@@ -56,6 +56,7 @@ body {
 }
 
 .header {
+    overflow: visible;
     color: blue;
     font-size: 65px;
     outline: 1px solid black;
@@ -69,6 +70,7 @@ body {
 }
 
 .sidebar div {
+    overflow: visible;
     outline: none;
     margin : 0 10px;
     padding: 5px 0;
@@ -94,6 +96,7 @@ body {
 
 
 .content {
+    overflow: scroll;
     grid-area: c;
     color: black;
     background-color: rgb(202, 200, 16);
@@ -105,6 +108,7 @@ body {
 }
 
 .sidebar {
+    overflow: visible;
     grid-area: s;
     background-color: rgb(202, 123, 16);
     display: flex;
@@ -116,6 +120,7 @@ body {
 }
 
 .footer {
+    overflow: hidden;
     grid-area: f;
     background-color: rgb(230, 52, 221);
     display: grid;
