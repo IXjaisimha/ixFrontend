@@ -1,3 +1,27 @@
+/* For the whole scrollbar track */
+::-webkit-scrollbar {
+    width: 5px; /* thickness of a vertical scrollbar */
+    height: 5px; /* thickness of a horizontal scrollbar */
+}
+
+/* For the draggable handle */
+::-webkit-scrollbar-thumb {
+    background-color: #f7f5f5;
+    border-radius: 5px;
+}
+
+/* For the non-covered part of the track */
+::-webkit-scrollbar-track {
+    background-color: transparent;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+
+
+
 *{
     margin: 0;
     padding: 0;
@@ -7,7 +31,7 @@
 html, body {
     height: 100%;
     width: 100%;
-    overflow: hidden;
+    overflow: scroll;
 }
 
 body {
@@ -17,6 +41,7 @@ body {
 }
 
 .container {
+    overflow: scroll;
     display: grid;
     background-color: rgb(233, 16, 16);
     grid-template : 2fr 8fr 1.5fr / repeat(auto-fit, minmax(100px, 1fr));
