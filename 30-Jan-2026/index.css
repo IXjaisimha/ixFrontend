@@ -66,7 +66,7 @@ body {
     flex-wrap: nowrap;
     width: 100%;
 
-
+    z-index: 2;
 }
 
 .top-header > * {
@@ -195,7 +195,6 @@ body {
 
 
 .header-logos{
-    
     display: flex;
     flex-direction: row;
     width: 75px;
@@ -279,6 +278,8 @@ body {
     margin-right: -53px;
     padding-right: 21px;
     margin-left: 28px;
+    border-radius: 1px;
+    border-right-style: solid;
 }
 
 .supported-logos img:last-child {
