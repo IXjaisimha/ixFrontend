@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Simple Form</title>
+</head>
+<body>
+  <form id="user-form">
+    <label>
+      Name:
+      <input type="text" id="name" name="name" required />
+    </label>
+    <br />
+    <label>
+      Age:
+      <input type="number" id="age" name="age" min="0" required />
+    </label>
+    <br />
+    <label>
+      Gender:
+      <select id="gender" name="gender" required>
+        <option value="" selected disabled>Select</option>
+        <option value="female">Female</option>
+        <option value="male">Male</option>
+        <option value="other">Other</option>
+        <option value="prefer-not-to-say">Prefer not to say</option>
+      </select>
+    </label>
+    <br />
+    <button type="submit" id="submit-btn">Submit</button>
+  </form>
+  <h4 id="summy"></h4>
+  <p id="status"></p>
+
+  <script>
+    const form = document.getElementById("user-form");
+    const submitBtn = document.getElementById("submit-btn");
+    const status = document.getElementById("status");
+
+    form.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const name = document.getElementById("name").value.trim();
+      const age = document.getElementById("age").value.trim();
+      const gender = document.getElementById("gender").value;
+      const summy = document.getElementById("summy");
+
+      submitBtn.disabled = true;
+      submitBtn.textContent = "Loading...";
+      status.textContent = "";
+
+      setTimeout(() => {
+        summy.innerHTML = `Details Entered are : `;
+        status.innerHTML = `Name: ${name}<br>Age: ${age}<br>Gender: ${gender}`;
+        submitBtn.disabled = false;
+        submitBtn.textContent = "Submit";
+      }, 5000);
+    });
+  </script>
+</body>
+</html>
