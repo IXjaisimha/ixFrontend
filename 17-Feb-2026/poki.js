@@ -105,7 +105,7 @@ const info = async (name) => {
 
         const heightEl = document.getElementById('pokemon-height');
         if (heightEl) {
-            heightEl.textContent = `${(data.height / 10).toFixed(1)} m`;
+            heightEl.textContent = `${(data.height / 3.048).toFixed(1)} ft`;
         }
 
         const weightEl = document.getElementById('pokemon-weight');
