@@ -11,51 +11,82 @@
     <script src="poki.js" defer></script>
 </head>
 <body class="min-h-screen bg-[radial-gradient(900px_circle_at_10%_10%,#fff0c4_10%,#ffd1a6_35%,#f2a6a6_60%,#b48fe3_100%)] text-slate-900">
-    <main class="mx-auto flex min-h-screen max-w-4xl flex-col items-center justify-center px-6 py-16">
-        <section class="w-full rounded-3xl border border-white/60 bg-white/70 p-8 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.5)] backdrop-blur">
-            <header class="flex flex-col gap-2 text-center">
+    <main class="mx-auto min-h-screen max-w-7xl px-6 py-16">
+        
+        <!-- List View -->
+        <section id="list-view" class="w-full">
+            <header class="mb-8 text-center">
                 <h1 class="text-4xl font-bold tracking-tight" style="font-family: 'Space Grotesk', sans-serif;">Pocket PokeDex</h1>
-                <p class="text-sm text-slate-600">Search any Pokemon and pull their core details instantly.</p>
+                <p class="mt-2 text-sm text-slate-600">Explore all Pokemon with type filtering and search</p>
+                <p id="status-message-list" class="mt-4 text-center text-sm font-semibold uppercase tracking-[0.25em] text-slate-600"></p>
             </header>
-            <div class="mt-8 flex flex-col gap-6">
-                <form id="search-form" class="flex flex-col gap-3 sm:flex-row sm:items-center">
-                    <input id="pokemon-input" type="text" placeholder="Arceus, Palkia, Dialga" class="w-full flex-1 rounded-2xl border border-white/60 bg-white/80 px-4 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-slate-800 shadow-sm outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-900/30">
-                    <button id="search-button" type="submit" class="rounded-2xl bg-slate-900 px-6 py-3 text-sm font-semibold uppercase tracking-[0.3em] text-white shadow-lg transition hover:-translate-y-0.5 hover:bg-slate-800">Search</button>
+            
+            <!-- Search Bar -->
+            <div class="mb-6 flex justify-center">
+                <form id="search-form-list" class="flex w-full max-w-2xl flex-col gap-3 sm:flex-row sm:items-start">
+                    <div class="relative w-full flex-1">
+                        <input id="pokemon-input-list" type="text" autocomplete="off" placeholder="Search Pokemon..." class="w-full rounded-2xl border border-white/60 bg-white/80 px-4 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-slate-800 shadow-sm outline-none transition focus:border-slate-900 focus:ring-2 focus:ring-slate-900/30 backdrop-blur">
+                        <div id="suggestions-container-list" class="absolute left-0 right-0 top-full z-10 mt-2 hidden max-h-64 overflow-y-auto rounded-2xl border border-white/60 bg-white/95 shadow-lg backdrop-blur"></div>
+                    </div>
                 </form>
-                <p id="status-message" class="text-center text-sm font-semibold uppercase tracking-[0.25em] text-slate-600"></p>
-                <div class="grid gap-6 rounded-2xl bg-slate-900/90 p-6 text-white sm:grid-cols-[1.2fr_0.8fr]">
-                    <div class="flex flex-col justify-center gap-4">
-                        <div>
-                            <p class="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Pokemon</p>
-                            <h2 id="pokemon-name" class="text-2xl font-semibold">Pikachu</h2>
-                        </div>
-                        <div class="flex flex-wrap gap-2" id="pokemon-types"></div>
-                        <div class="grid grid-cols-2 gap-4 text-sm text-slate-200">
+            </div>
+            
+            <!-- Type Filter Pills -->
+            <div class="mb-6 flex flex-wrap justify-center gap-2" id="type-filters"></div>
+            
+            <!-- Pokemon Grid -->
+            <div id="pokemon-grid" class="mb-8 grid grid-cols-2 gap-4 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5"></div>
+            
+            <!-- Pagination -->
+            <div id="pagination" class="flex items-center justify-center gap-2"></div>
+        </section>
+        
+        <!-- Detail View -->
+        <section id="detail-view" class="hidden w-full">
+            <div class="mx-auto max-w-4xl">
+                
+                
+                <div class="rounded-3xl border border-white/60 bg-white/70 p-8 shadow-[0_20px_60px_-25px_rgba(15,23,42,0.5)] backdrop-blur">
+                    <header class="mb-6 flex flex-col gap-2 text-center">
+                        <h1 class="text-4xl font-bold tracking-tight" style="font-family: 'Space Grotesk', sans-serif;">Pokemon Details</h1>
+                    </header>
+                        <p id="status-message" class="text-center text-sm font-semibold uppercase tracking-[0.25em] text-slate-600"></p>
+                    <div id="detail-main-card" class="grid gap-6 rounded-2xl bg-slate-900/90 p-6 text-white sm:grid-cols-[1.2fr_0.8fr]">
+                        <div id="detail-info-panel" class="flex flex-col justify-center gap-4">
                             <div>
-                                <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Height</p>
-                                <p id="pokemon-height" class="text-base font-semibold">0.4 m</p>
+                                <p id="pokemon-id" class="text-xs font-semibold uppercase tracking-[0.25em] text-slate-100">ID of the pokemon</p>
                             </div>
                             <div>
-                                <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Weight</p>
-                                <p id="pokemon-weight" class="text-base font-semibold">6.0 kg</p>
+                                <p class="text-xs font-semibold uppercase tracking-[0.4em] text-slate-400">Pokemon</p>
+                                <h2 id="pokemon-name" class="text-2xl font-semibold">Pikachu</h2>
                             </div>
-                            <div>
-                                <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Ability</p>
-                                <p id="pokemon-ability" class="text-base font-semibold">Static</p>
-                            </div>
-                            <div>
-                                <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Base XP</p>
-                                <p id="pokemon-xp" class="text-base font-semibold">112</p>
+                            <div class="flex flex-wrap gap-2" id="pokemon-types"></div>
+                            <div class="grid grid-cols-2 gap-4 text-sm text-slate-200">
+                                <div>
+                                    <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Height</p>
+                                    <p id="pokemon-height" class="text-base font-semibold">0.4 m</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Weight</p>
+                                    <p id="pokemon-weight" class="text-base font-semibold">6.0 kg</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Ability</p>
+                                    <p id="pokemon-ability" class="text-base font-semibold">Static</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs uppercase tracking-[0.3em] text-slate-400">Base XP</p>
+                                    <p id="pokemon-xp" class="text-base font-semibold">112</p>
+                                </div>
                             </div>
                             <div id="pokemon-speciality-container"></div>
-                            
                         </div>
-                    </div>
-                    <div class="flex flex-col items-center justify-center gap-4 rounded-2xl bg-white/90 p-6 text-slate-900 shadow-inner">
-                        <div id="pokemon" class="flex items-center justify-center"></div>
-                        <div class="w-full">
-                            <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Top stats</p>
-                            <div id="pokemon-stats" class="mt-3 grid gap-2 text-sm"></div>
+                        <div id="detail-media-stats-panel" class="flex flex-col items-center justify-center gap-4 rounded-2xl bg-white/90 p-6 text-slate-900 shadow-inner">
+                            <div id="pokemon" class="flex items-center justify-center"></div>
+                            <div class="w-full">
+                                <p class="text-xs font-semibold uppercase tracking-[0.3em] text-slate-500">Top stats</p>
+                                <div id="pokemon-stats" class="mt-3 grid gap-2 text-sm"></div>
+                            </div>
                         </div>
                     </div>
                 </div>
