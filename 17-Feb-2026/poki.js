@@ -104,6 +104,31 @@ const pokemonTypes = ['all', 'normal', 'fire', 'water', 'electric', 'grass', 'ic
 const listViewBackground = 'radial-gradient(900px circle at 10% 10%, #fff0c4 10%, #ffd1a6 35%, #f2a6a6 60%, #b48fe3 100%)';
 const detailViewBackground = './thimo-pedersen-dip9IIwUK6w-unsplash.jpg';
 
+const buildPokemonDetailUrl = (pokemonName) => {
+    const normalizedName = encodeURIComponent(formatName(pokemonName));
+    const currentUrl = new URL(window.location.href);
+    return `${currentUrl.pathname}?#/pokemon=${normalizedName}`;
+};
+
+const getPokemonNameFromUrl = () => {
+    const searchParams = new URLSearchParams(window.location.search);
+    const searchPokemon = searchParams.get('pokemon');
+    if (searchPokemon) {
+        return searchPokemon;
+    }
+
+    const hash = window.location.hash || '';
+    if (hash.startsWith('#/pokemon=')) {
+        return decodeURIComponent(hash.replace('#/pokemon=', ''));
+    }
+
+    return null;
+};
+
+const openPokemonInNewPage = (pokemonName) => {
+    window.location.href = buildPokemonDetailUrl(pokemonName);
+};
+
 const applyPageBackground = (view) => {
     const body = document.body;
     if (!body) {
@@ -345,7 +370,7 @@ const renderPokemonGrid = () => {
     grid.querySelectorAll('.pokemon-card').forEach(card => {
         card.addEventListener('click', () => {
             const name = card.dataset.pokemon;
-            showDetailView(name);
+            openPokemonInNewPage(name);
         });
     });
 };
@@ -470,7 +495,7 @@ const showDetailView = async (pokemonName, shouldPushState = true) => {
     document.getElementById('detail-view')?.classList.remove('hidden');
     applyPageBackground('detail');
     if (shouldPushState) {
-        history.pushState(null, '', `?pokemon=${pokemonName}`);
+        history.pushState(null, '', `#/pokemon=${encodeURIComponent(formatName(pokemonName))}`);
     }
     window.scrollTo({ top: 0, behavior: 'smooth' });
     return true;
@@ -478,13 +503,13 @@ const showDetailView = async (pokemonName, shouldPushState = true) => {
 
 
 const info = async (name) => {
-    const formattedName = formatName(name).split('-')[0]; // Handle forms like "giratina-altered"
+    const formattedName = formatName(name); // Handle forms like "giratina-altered"
     if (!formattedName) {
         setStatus('Enter a Pokemon name.', true);
         return false;
     }
-
-    const godInfo = GodsofPokemon[formattedName.charAt(0).toUpperCase() + formattedName.slice(1)];
+    const formattedName2 = formattedName.split('-')[0]; // Get base name for god info lookup
+    const godInfo = GodsofPokemon[formattedName2.charAt(0).toUpperCase() + formattedName2.slice(1)];
 
 
     setStatus('Loading...');
@@ -596,7 +621,7 @@ const info = async (name) => {
 document.addEventListener('DOMContentLoaded', async () => {
     // Check if we should show detail view or list view
     const urlParams = new URLSearchParams(window.location.search);
-    const pokemonName = urlParams.get('pokemon');
+    const pokemonName = getPokemonNameFromUrl();
     const pageParam = urlParams.get('page');
     const typeParam = urlParams.get('type');
     
@@ -630,14 +655,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         await loadPokemonData(200);
     }
     
-    // Back button handler
-    const backButton = document.getElementById('back-button');
-    if (backButton) {
-        backButton.addEventListener('click', () => {
-            showListView();
-            setListStatus('');
-        });
-    }
     
     // List view search functionality
     const inputList = document.getElementById('pokemon-input-list');
@@ -683,7 +700,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 }
             } else if (e.key === 'Enter' && selectedListSuggestionIndex >= 0) {
                 e.preventDefault();
-                await showDetailView(visibleMatches[selectedListSuggestionIndex]);
+                openPokemonInNewPage(visibleMatches[selectedListSuggestionIndex]);
                 inputList.value = '';
                 hideListSuggestions();
             } else if (e.key === 'Escape') {
@@ -711,7 +728,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             e.preventDefault();
             const name = inputList.value;
             if (name) {
-                await showDetailView(name);
+                openPokemonInNewPage(name);
                 inputList.value = '';
                 hideListSuggestions();
             }
@@ -747,7 +764,7 @@ const showSuggestionsForList = (matches) => {
         item.addEventListener('mousedown', async (e) => {
             e.preventDefault();
             const name = item.dataset.name;
-            await showDetailView(name);
+            openPokemonInNewPage(name);
             const input = document.getElementById('pokemon-input-list');
             if (input) input.value = '';
             hideListSuggestions();
@@ -755,9 +772,9 @@ const showSuggestionsForList = (matches) => {
     });
 };
 
-addEventListener('popstate', () => {
+const syncViewWithRoute = () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const pokemonName = urlParams.get('pokemon');
+    const pokemonName = getPokemonNameFromUrl();
     const pageParam = urlParams.get('page');
     const typeParam = urlParams.get('type');
     
@@ -784,4 +801,7 @@ addEventListener('popstate', () => {
         renderPagination();
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-});
+};
+
+addEventListener('popstate', syncViewWithRoute);
+addEventListener('hashchange', syncViewWithRoute);
